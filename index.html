@@ -12,33 +12,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <!-- Chart.js for dashboard charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet.js for interactive maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Light gray background */
+            background-color: #f8fafc; /* A slightly softer gray */
         }
         .font-serif {
             font-family: 'Playfair Display', serif;
         }
         .bg-dark-chocolate { background-color: #3D2B1F; }
         .text-dark-chocolate { color: #3D2B1F; }
+        
         /* Animation for the map highlight */
         @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.7;
-            }
-            50% {
-                transform: scale(1.5);
-                opacity: 0.2;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.8); opacity: 0; }
         }
-        .pulse-animate {
+        
+        /* Leaflet Pulsating Icon */
+        .leaflet-pulsing-icon {
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(255, 0, 0, 0.4);
             animation: pulse 2s infinite;
+        }
+
+        /* Smooth transitions for data changes */
+        .transition-all-smooth {
+            transition: all 0.4s ease-in-out;
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="text-gray-800 antialiased">
 
     <!-- Header Section -->
     <header class="bg-dark-chocolate text-white py-4 shadow-lg">
@@ -54,10 +61,10 @@
         <!-- Dashboard Section -->
         <section class="bg-white p-4 md:p-6 rounded-lg shadow-xl border border-gray-200">
             <div class="flex flex-col md:flex-row justify-between items-center mb-2">
-                 <h3 class="font-serif text-2xl md:text-3xl text-center">Analytics Dashboard</h3>
+                 <h3 class="font-serif text-2xl md:text-3xl text-center text-dark-chocolate">Analytics Dashboard</h3>
                  <div class="mt-4 md:mt-0">
-                     <label for="scenario-select" class="text-sm font-semibold">Select Scenario:</label>
-                     <select id="scenario-select" class="p-2 border rounded-md text-sm">
+                     <label for="scenario-select" class="text-sm font-semibold text-gray-700">Select Scenario:</label>
+                     <select id="scenario-select" class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500 text-sm">
                          <option value="normal" selected>Normal Operations</option>
                          <option value="festive">Festive Season Surge</option>
                          <option value="disruption">Supply Chain Disruption</option>
@@ -68,23 +75,23 @@
 
             <!-- KPI Cards -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center text-dark-chocolate">
-                <div class="bg-purple-100 p-3 rounded-lg shadow">
-                    <p id="kpi-inventory-units" class="font-bold text-2xl md:text-3xl">311</p>
+                <div class="bg-purple-50 p-3 rounded-lg shadow border border-purple-200">
+                    <p id="kpi-inventory-units" class="font-bold text-2xl md:text-3xl transition-all-smooth">311</p>
                     <p id="kpi-inventory-units-delta" class="text-sm font-semibold"><span class="font-bold text-green-600">▲ 18.7%</span> vs PM</p>
                     <p class="text-xs text-gray-600 mt-1">(Inventory Units)</p>
                 </div>
-                <div class="bg-red-100 p-3 rounded-lg shadow">
-                    <p id="kpi-inventory-value" class="font-bold text-2xl md:text-3xl">21.6 L</p>
+                <div class="bg-red-50 p-3 rounded-lg shadow border border-red-200">
+                    <p id="kpi-inventory-value" class="font-bold text-2xl md:text-3xl transition-all-smooth">21.6 L</p>
                     <p id="kpi-inventory-value-delta" class="text-sm font-semibold"><span class="font-bold text-green-600">▲ 6.8%</span> vs PM</p>
                     <p class="text-xs text-gray-600 mt-1">(Inventory Value)</p>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-lg shadow">
-                    <p id="kpi-service-level" class="font-bold text-2xl md:text-3xl">91.2%</p>
+                <div class="bg-blue-50 p-3 rounded-lg shadow border border-blue-200">
+                    <p id="kpi-service-level" class="font-bold text-2xl md:text-3xl transition-all-smooth">91.2%</p>
                     <p id="kpi-service-level-delta" class="text-sm font-semibold"><span class="font-bold text-red-600">▼ 1.9%</span> vs PM</p>
                     <p class="text-xs text-gray-600 mt-1">(Service Level)</p>
                 </div>
-                <div class="bg-green-100 p-3 rounded-lg shadow">
-                    <p id="kpi-sales-value" class="font-bold text-2xl md:text-3xl">86.5 L</p>
+                <div class="bg-green-50 p-3 rounded-lg shadow border border-green-200">
+                    <p id="kpi-sales-value" class="font-bold text-2xl md:text-3xl transition-all-smooth">86.5 L</p>
                     <p id="kpi-sales-value-delta" class="text-sm font-semibold"><span class="font-bold text-green-600">▲ 5.2%</span> vs PM</p>
                     <p class="text-xs text-gray-600 mt-1">(Sales Value)</p>
                 </div>
@@ -92,36 +99,15 @@
 
             <!-- Plant Level Summaries -->
             <div class="mt-8 pt-6 border-t-2 border-yellow-400">
-                <h4 class="font-serif text-xl text-center mb-6">Plant Level Summaries</h4>
+                <h4 class="font-serif text-xl text-center mb-6 text-dark-chocolate">Plant Level Summaries</h4>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Map & Filters -->
                     <div class="border p-4 rounded-lg shadow-inner bg-gray-50">
                         <p class="text-sm font-bold mb-4">MadForCad Supply Chain Network in India</p>
-                         <div class="relative">
-                            <!-- India Map SVG -->
-                            <svg class="w-full h-auto" viewBox="0 0 550 600" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M428.16,211.51,417.83,195.4a4.11,4.11,0,0,0-6.09-.4L320.4,250.38l-4.7-20.14-11.52-2.31-2.12-11.14.71-18.23,4.24-21.23,10.26-17.15,9.55-2.83,16-16.7L360.27,125l9.19-22.3-1.41-11.32-15.63-22.49-27.42-32-42.06-25.1-34.11-2.83-29.35,8.85-21,11.32-21.18,21.57-13.26,20.44-3.54,12.74-12,3.19-14.86,13.81-22.28-2.12-23-14.15-13.81-12.74-2.83-23.73-10.26-15.22-12.38-2.83-19.1-15.63-7.78-9.91-17.34-1-20.14-1.77L50.2,168.12l-1.77,15.63-10.26,16.7-1.41,12.74-5.66,13.81,2.83,12.38,12,18.78,16.34,31.25,2.48,15.22,14.51,33,12.74,13.44,18.06,12.38,15.22,23.37,25.49,43.48,10.62,11.32,18.78,20.14,13.44,18.78,13.81,11.68,16,13.81,23,16,20.89,6.73,19.47-2.12,15.22-10.62,21.57-19.82,23.37-2.83,10.26,1.41,14.51,13.44,21.23,19.1,13.81,25.49,1.41,20.51-14.86,28.65-17.68,15.63-22.66,10.62-11.68,16.7-2.83,23.37,13.08,31.62,13.44,16.7,1.41,19.47-16.7,11.32-16.34,1.41-13.81-10.26-21.57-7.43-16.7,1.77-19.1,12-16.34,16.7-22.66,28.32-25.49,18.41-16,15.22-18.78,7.43-14.15Z" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"></path>
-                            </svg>
-                            <!-- Static Map Points -->
-                            <div class="absolute w-3 h-3 bg-blue-600 rounded-full ring-2 ring-white" style="top: 48%; left: 38%;" title="Mumbai (Manufacturing)"></div>
-                            <div class="absolute w-3 h-3 bg-red-600 rounded-full ring-2 ring-white" style="top: 28%; left: 45%;" title="Gurgaon (Warehouse)"></div>
-                            <div class="absolute w-3 h-3 bg-green-600 rounded-full ring-2 ring-white" style="top: 45%; left: 50%;" title="Bhopal (RDC)"></div>
-                            <div class="absolute w-3 h-3 bg-blue-600 rounded-full ring-2 ring-white" style="top: 48%; left: 80%;" title="Kolkata (Manufacturing)"></div>
-                            <div class="absolute w-3 h-3 bg-red-600 rounded-full ring-2 ring-white" style="top: 50%; left: 25%;" title="Rajkot (Warehouse)"></div>
-                            <div class="absolute w-3 h-3 bg-red-600 rounded-full ring-2 ring-white" style="top: 65%; left: 50%;" title="Hyderabad (Warehouse)"></div>
-                            <div class="absolute w-3 h-3 bg-green-600 rounded-full ring-2 ring-white" style="top: 80%; left: 35%;" title="Kerala (RDC)"></div>
-                            <!-- Dynamic Highlight -->
-                            <div id="map-highlight" class="absolute w-5 h-5 border-4 border-blue-600 bg-white rounded-full transition-all duration-500" style="top: 50%; left: 42%;">
-                                <div class="absolute inset-0 rounded-full bg-blue-500 pulse-animate"></div>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap justify-between mt-4 text-xs">
-                             <div class="flex items-center"><div class="w-2 h-2 bg-blue-600 rounded-full mr-1.5"></div>Manufacturing</div>
-                             <div class="flex items-center"><div class="w-2 h-2 bg-red-600 rounded-full mr-1.5"></div>Warehouse</div>
-                             <div class="flex items-center"><div class="w-2 h-2 bg-green-600 rounded-full mr-1.5"></div>RDC</div>
-                        </div>
-                        <div class="mt-4 grid grid-cols-2 gap-2">
-                            <select id="location-select" class="w-full p-2 border rounded-md text-sm">
+                         <div id="map" class="w-full h-80 md:h-96 rounded-lg z-0"></div>
+                        <div class="mt-4">
+                            <label for="location-select" class="sr-only">Select Location</label>
+                            <select id="location-select" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500 text-sm">
                                 <option value="pune" selected>Pune</option>
                                 <option value="chennai">Chennai</option>
                                 <option value="gurgaon">Gurgaon</option>
@@ -130,19 +116,18 @@
                                 <option value="rajkot">Rajkot</option>
                                 <option value="hyderabad">Hyderabad</option>
                             </select>
-                            <select class="w-full p-2 border rounded-md text-sm"><option>Select: Category</option><option>Premium</option><option>Gifting</option></select>
                         </div>
                     </div>
                      <!-- Details & Charts -->
                     <div class="space-y-4">
                         <div class="border p-4 rounded-lg shadow-inner bg-gray-50">
-                            <p id="plant-name" class="font-bold text-lg">Pune, Maharashtra</p>
+                            <p id="plant-name" class="font-bold text-lg text-dark-chocolate">Pune, Maharashtra</p>
                             <div class="space-y-1.5 mt-2">
-                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Current Stock (FG)</span><span id="stock-fg" class="font-bold text-lg">2.1k</span></div>
-                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Current Stock (RM)</span><span id="stock-rm" class="font-bold text-lg">8.9k</span></div>
-                                <div class="flex justify-between items-center bg-green-50 p-2 rounded"><span>Demand from App</span><span id="demand-app" class="font-bold text-lg">3.4k</span></div>
-                                <div class="flex justify-between items-center bg-orange-50 p-2 rounded"><span>Capacity Utilization</span><span id="capacity" class="font-bold text-lg text-red-600">101%</span></div>
-                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Inventory Turnover</span><span id="turnover" class="font-bold text-lg">4.2</span></div>
+                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Current Stock (FG)</span><span id="stock-fg" class="font-bold text-lg transition-all-smooth">2.1k</span></div>
+                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Current Stock (RM)</span><span id="stock-rm" class="font-bold text-lg transition-all-smooth">8.9k</span></div>
+                                <div class="flex justify-between items-center bg-green-50 p-2 rounded"><span>Demand from App</span><span id="demand-app" class="font-bold text-lg transition-all-smooth">3.4k</span></div>
+                                <div class="flex justify-between items-center bg-orange-50 p-2 rounded"><span>Capacity Utilization</span><span id="capacity" class="font-bold text-lg text-red-600 transition-all-smooth">101%</span></div>
+                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Inventory Turnover</span><span id="turnover" class="font-bold text-lg transition-all-smooth">4.2</span></div>
                             </div>
                         </div>
                         <div class="border p-4 rounded-lg text-sm shadow-inner bg-gray-50">
@@ -166,23 +151,38 @@
 
             <!-- Demand Forecasting -->
             <div class="mt-8 pt-6 border-t-2 border-yellow-400">
-                <h4 class="font-serif text-xl text-center mb-6">Demand Forecasting Using Advanced Analytics</h4>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <div class="border p-4 rounded-lg shadow-inner bg-gray-50">
+                <h4 class="font-serif text-xl text-center mb-6 text-dark-chocolate">Demand Forecasting (ARIMA Model Simulation)</h4>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+                    <div class="lg:col-span-3 border p-4 rounded-lg shadow-inner bg-gray-50 h-72 md:h-96">
                         <canvas id="demandChart"></canvas>
                     </div>
-                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg h-full">
-                        <h5 class="font-bold text-lg text-green-800">Recommendations</h5>
-                        <p class="text-sm mt-2">Combining App & Demand Forecast data to give curated insights:</p>
-                        <ul id="recommendations-list" class="list-decimal list-inside text-sm mt-3 space-y-2">
-                            <li>The forecast predicts a <strong>20% surge in demand</strong> for this category in major metro areas over the next 14 days, driven by q-commerce velocity.</li>
-                             <li>Consider increasing stock levels at Chennai warehouse by <strong>15%</strong> to meet projected demand and maintain service levels.</li>
-                        </ul>
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                            <h5 class="font-bold text-lg text-green-800">Model Recommendations</h5>
+                            <ul id="recommendations-list" class="list-decimal list-inside text-sm mt-2 space-y-1.5"></ul>
+                        </div>
+                        <div class="border p-4 rounded-lg shadow-inner bg-gray-50">
+                            <h5 class="font-bold text-lg text-dark-chocolate mb-2">Forecast Data</h5>
+                            <div class="overflow-x-auto max-h-48">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="bg-gray-200 sticky top-0">
+                                        <tr>
+                                            <th class="p-2">Month</th>
+                                            <th class="p-2">Sales</th>
+                                            <th class="p-2">Forecast</th>
+                                            <th class="p-2">Range</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="forecast-data-table">
+                                        <!-- Data will be populated by script -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 
     <!-- Footer Section -->
@@ -192,142 +192,227 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            // --- Main Data Store for all scenarios and locations ---
+            // --- Main Data Store ---
             const dashboardData = {
                 normal: {
                     kpis: {
-                        inventoryUnits: { value: "311", delta: "▲ 18.7%", color: "text-green-600" },
-                        inventoryValue: { value: "21.6 L", delta: "▲ 6.8%", color: "text-green-600" },
-                        serviceLevel: { value: "91.2%", delta: "▼ 1.9%", color: "text-red-600" },
-                        salesValue: { value: "86.5 L", delta: "▲ 5.2%", color: "text-green-600" }
+                        inventoryUnits: { value: 311, delta: "▲ 18.7%", color: "text-green-600" },
+                        inventoryValue: { value: 21.6, delta: "▲ 6.8%", color: "text-green-600" },
+                        serviceLevel: { value: 91.2, delta: "▼ 1.9%", color: "text-red-600" },
+                        salesValue: { value: 86.5, delta: "▲ 5.2%", color: "text-green-600" }
                     },
-                    chartData: { actual: [180, 210, 190, null], estimated: [190, 200, 230, 220] },
+                    chartData: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+                        historical: [180, 210, 190, 220, 205, null, null, null],
+                        forecast: [null, null, null, null, 215, 225, 230, 220],
+                        lowerBound: [null, null, null, null, 200, 210, 215, 205],
+                        upperBound: [null, null, null, null, 230, 240, 245, 235]
+                    },
                     recommendations: [
-                        "The forecast predicts a <strong>20% surge in demand</strong> for this category in major metro areas over the next 14 days, driven by q-commerce velocity.",
-                        "Consider increasing stock levels at Chennai warehouse by <strong>15%</strong> to meet projected demand and maintain service levels."
+                        "Forecast indicates stable demand. Maintain current inventory strategy.",
+                        "Monitor Q-Commerce velocity in metro areas for potential upside."
                     ],
                     locations: {
-                        pune: { name: "Pune, Maharashtra", stockFG: "2.1k", stockRM: "8.9k", demand: "3.4k", capacity: "101%", capacityColor: "text-red-600", turnover: "4.2", sales: { traditional: [76, 15, 9], ecommerce: [73, 15, 12], qcommerce: [72, 15, 13] }, coords: { top: '50%', left: '42%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.8k", stockRM: "7.2k", demand: "2.9k", capacity: "95%", capacityColor: "text-green-600", turnover: "3.8", sales: { traditional: [60, 25, 15], ecommerce: [55, 25, 20], qcommerce: [50, 28, 22] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "2.5k", stockRM: "9.1k", demand: "3.9k", capacity: "98%", capacityColor: "text-green-600", turnover: "4.5", sales: { traditional: [50, 25, 25], ecommerce: [40, 30, 30], qcommerce: [35, 35, 30] }, coords: { top: '28%', left: '45%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.8k", stockRM: "2.5k", demand: "1.1k", capacity: "N/A", capacityColor: "text-gray-600", turnover: "3.1", sales: { traditional: [80, 15, 5], ecommerce: [75, 20, 5], qcommerce: [70, 25, 5] }, coords: { top: '45%', left: '50%' }, highlightColor: 'border-green-600', pulseColor: 'bg-green-500' },
-                        kolkata: { name: "Kolkata, West Bengal", stockFG: "2.2k", stockRM: "8.5k", demand: "3.1k", capacity: "99%", capacityColor: "text-green-600", turnover: "4.0", sales: { traditional: [70, 20, 10], ecommerce: [65, 25, 10], qcommerce: [60, 25, 15] }, coords: { top: '48%', left: '80%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.5k", stockRM: "6.8k", demand: "2.5k", capacity: "92%", capacityColor: "text-green-600", turnover: "3.5", sales: { traditional: [85, 10, 5], ecommerce: [80, 15, 5], qcommerce: [78, 17, 5] }, coords: { top: '50%', left: '25%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "1.9k", stockRM: "7.8k", demand: "3.0k", capacity: "96%", capacityColor: "text-green-600", turnover: "3.9", sales: { traditional: [65, 20, 15], ecommerce: [55, 25, 20], qcommerce: [50, 30, 20] }, coords: { top: '65%', left: '50%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
+                        pune: { name: "Pune, Maharashtra", stockFG: "2.1k", stockRM: "8.9k", demand: "3.4k", capacity: 101, turnover: "4.2", sales: { traditional: [76, 15, 9], ecommerce: [73, 15, 12], qcommerce: [72, 15, 13] }, coords: [18.5204, 73.8567], highlightColor: '#DC2626' }, // red-600
+                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.8k", stockRM: "7.2k", demand: "2.9k", capacity: 95, turnover: "3.8", sales: { traditional: [60, 25, 15], ecommerce: [55, 25, 20], qcommerce: [50, 28, 22] }, coords: [13.0827, 80.2707], highlightColor: '#EC4899' }, // pink-500
+                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "1.5k", stockRM: "6.5k", demand: "2.5k", capacity: 92, turnover: "4.5", sales: { traditional: [80, 10, 10], ecommerce: [75, 15, 10], qcommerce: [70, 18, 12] }, coords: [28.4595, 77.0266], highlightColor: '#3B82F6' }, // blue-600
+                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.9k", stockRM: "4.1k", demand: "1.2k", capacity: 88, turnover: "3.1", sales: { traditional: [85, 10, 5], ecommerce: [82, 12, 6], qcommerce: [80, 15, 5] }, coords: [23.2599, 77.4126], highlightColor: '#9333EA' }, // purple-600
+                        kolkata: { name: "Kolkata, West Bengal", stockFG: "2.5k", stockRM: "9.8k", demand: "3.9k", capacity: 98, turnover: "4.8", sales: { traditional: [70, 20, 10], ecommerce: [65, 25, 10], qcommerce: [60, 28, 12] }, coords: [22.5726, 88.3639], highlightColor: '#22C55E' }, // green-500
+                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.1k", stockRM: "5.2k", demand: "1.9k", capacity: 94, turnover: "3.5", sales: { traditional: [78, 12, 10], ecommerce: [74, 16, 10], qcommerce: [71, 19, 10] }, coords: [22.3039, 70.8022], highlightColor: '#F59E0B' }, // amber-500
+                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "2.2k", stockRM: "9.1k", demand: "3.1k", capacity: 97, turnover: "4.1", sales: { traditional: [72, 18, 10], ecommerce: [68, 22, 10], qcommerce: [65, 25, 10] }, coords: [17.3850, 78.4867], highlightColor: '#4F46E5' }, // indigo-600
                     }
                 },
                 festive: {
                     kpis: {
-                        inventoryUnits: { value: "450", delta: "▲ 35.1%", color: "text-green-600" },
-                        inventoryValue: { value: "31.2 L", delta: "▲ 28.4%", color: "text-green-600" },
-                        serviceLevel: { value: "95.8%", delta: "▲ 2.1%", color: "text-green-600" },
-                        salesValue: { value: "120.1 L", delta: "▲ 45.3%", color: "text-green-600" }
+                        inventoryUnits: { value: 450, delta: "▲ 35.1%", color: "text-green-600" },
+                        inventoryValue: { value: 31.2, delta: "▲ 28.4%", color: "text-green-600" },
+                        serviceLevel: { value: 95.8, delta: "▲ 2.1%", color: "text-green-600" },
+                        salesValue: { value: 120.1, delta: "▲ 45.3%", color: "text-green-600" }
                     },
-                    chartData: { actual: [220, 250, 280, null], estimated: [230, 260, 290, 310] },
-                     recommendations: [
+                    chartData: {
+                        labels: ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
+                        historical: [220, 250, 280, 310, null, null, null, null],
+                        forecast: [null, null, null, null, 320, 305, 290, 280],
+                        lowerBound: [null, null, null, null, 300, 290, 275, 265],
+                        upperBound: [null, null, null, null, 340, 320, 305, 295]
+                    },
+                    recommendations: [
                         "Festive demand is tracking <strong>5% above forecast</strong>. Expedite replenishment for Gifting SKUs.",
-                        "Pune capacity is at <strong>115%</strong>. Consider diverting production of Affordable SKUs to Mumbai to prioritize Premium and Gifting categories."
+                        "Pune capacity is at <strong>115%</strong>. Consider diverting production of Affordable SKUs to another plant to prioritize Premium and Gifting categories."
                     ],
-                    locations: {
-                        pune: { name: "Pune, Maharashtra", stockFG: "3.5k", stockRM: "10.1k", demand: "5.8k", capacity: "115%", capacityColor: "text-red-600", turnover: "5.5", sales: { traditional: [40, 30, 30], ecommerce: [35, 30, 35], qcommerce: [30, 35, 35] }, coords: { top: '50%', left: '42%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "2.9k", stockRM: "9.5k", demand: "4.5k", capacity: "105%", capacityColor: "text-red-600", turnover: "4.9", sales: { traditional: [35, 35, 30], ecommerce: [30, 35, 35], qcommerce: [25, 40, 35] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "4.1k", stockRM: "11.2k", demand: "6.2k", capacity: "110%", capacityColor: "text-red-600", turnover: "6.1", sales: { traditional: [30, 35, 35], ecommerce: [25, 40, 35], qcommerce: [20, 40, 40] }, coords: { top: '28%', left: '45%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "1.2k", stockRM: "3.5k", demand: "1.8k", capacity: "N/A", capacityColor: "text-gray-600", turnover: "4.0", sales: { traditional: [70, 20, 10], ecommerce: [65, 25, 10], qcommerce: [60, 30, 10] }, coords: { top: '45%', left: '50%' }, highlightColor: 'border-green-600', pulseColor: 'bg-green-500' },
-                        kolkata: { name: "Kolkata, West Bengal", stockFG: "3.8k", stockRM: "10.5k", demand: "5.5k", capacity: "112%", capacityColor: "text-red-600", turnover: "5.2", sales: { traditional: [45, 30, 25], ecommerce: [40, 35, 25], qcommerce: [35, 35, 30] }, coords: { top: '48%', left: '80%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        rajkot: { name: "Rajkot, Gujarat", stockFG: "2.5k", stockRM: "8.1k", demand: "3.5k", capacity: "102%", capacityColor: "text-red-600", turnover: "4.5", sales: { traditional: [75, 15, 10], ecommerce: [70, 20, 10], qcommerce: [65, 25, 10] }, coords: { top: '50%', left: '25%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "3.1k", stockRM: "9.8k", demand: "4.8k", capacity: "108%", capacityColor: "text-red-600", turnover: "5.0", sales: { traditional: [40, 30, 30], ecommerce: [35, 35, 30], qcommerce: [30, 40, 30] }, coords: { top: '65%', left: '50%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
+                     locations: {
+                        pune: { name: "Pune, Maharashtra", stockFG: "3.5k", stockRM: "10.1k", demand: "5.8k", capacity: 115, turnover: "5.5", sales: { traditional: [40, 30, 30], ecommerce: [35, 30, 35], qcommerce: [30, 35, 35] }, coords: [18.5204, 73.8567], highlightColor: '#DC2626' },
+                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "2.9k", stockRM: "9.5k", demand: "4.5k", capacity: 105, turnover: "4.9", sales: { traditional: [35, 35, 30], ecommerce: [30, 35, 35], qcommerce: [25, 40, 35] }, coords: [13.0827, 80.2707], highlightColor: '#EC4899' },
+                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "2.8k", stockRM: "8.1k", demand: "4.2k", capacity: 110, turnover: "5.8", sales: { traditional: [50, 25, 25], ecommerce: [45, 30, 25], qcommerce: [40, 35, 25] }, coords: [28.4595, 77.0266], highlightColor: '#3B82F6' },
+                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "1.5k", stockRM: "5.5k", demand: "2.5k", capacity: 99, turnover: "4.0", sales: { traditional: [60, 20, 20], ecommerce: [55, 25, 20], qcommerce: [50, 30, 20] }, coords: [23.2599, 77.4126], highlightColor: '#9333EA' },
+                        kolkata: { name: "Kolkata, West Bengal", stockFG: "3.8k", stockRM: "11.2k", demand: "5.5k", capacity: 108, turnover: "6.1", sales: { traditional: [45, 30, 25], ecommerce: [40, 35, 25], qcommerce: [35, 40, 25] }, coords: [22.5726, 88.3639], highlightColor: '#22C55E' },
+                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.9k", stockRM: "6.8k", demand: "3.1k", capacity: 102, turnover: "4.7", sales: { traditional: [55, 25, 20], ecommerce: [50, 30, 20], qcommerce: [45, 35, 20] }, coords: [22.3039, 70.8022], highlightColor: '#F59E0B' },
+                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "3.4k", stockRM: "10.5k", demand: "4.8k", capacity: 106, turnover: "5.3", sales: { traditional: [50, 28, 22], ecommerce: [45, 33, 22], qcommerce: [40, 38, 22] }, coords: [17.3850, 78.4867], highlightColor: '#4F46E5' },
                     }
                 },
                 disruption: {
                     kpis: {
-                        inventoryUnits: { value: "250", delta: "▼ 10.2%", color: "text-red-600" },
-                        inventoryValue: { value: "18.1 L", delta: "▼ 15.8%", color: "text-red-600" },
-                        serviceLevel: { value: "75.4%", delta: "▼ 15.3%", color: "text-red-600" },
-                        salesValue: { value: "70.2 L", delta: "▼ 12.1%", color: "text-red-600" }
+                        inventoryUnits: { value: 250, delta: "▼ 10.2%", color: "text-red-600" },
+                        inventoryValue: { value: 18.1, delta: "▼ 15.8%", color: "text-red-600" },
+                        serviceLevel: { value: 75.4, delta: "▼ 15.3%", color: "text-red-600" },
+                        salesValue: { value: 70.2, delta: "▼ 12.1%", color: "text-red-600" }
                     },
-                    chartData: { actual: [180, 150, 130, null], estimated: [190, 200, 230, 220] },
+                    chartData: {
+                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+                        historical: [180, 210, 150, 130, null, null, null, null],
+                        forecast: [null, null, null, null, 145, 160, 170, 165],
+                        lowerBound: [null, null, null, null, 130, 145, 155, 150],
+                        upperBound: [null, null, null, null, 160, 175, 185, 180]
+                    },
                     recommendations: [
                         "A logistics delay has impacted RM supply to Pune, causing a <strong>critical drop in service levels</strong>.",
                         "Prioritize available stock for Q-Commerce to protect high-margin channels. Re-route next RM shipment via an alternate carrier."
                     ],
                     locations: {
-                        pune: { name: "Pune, Maharashtra", stockFG: "1.1k", stockRM: "3.2k", demand: "3.1k", capacity: "70%", capacityColor: "text-orange-500", turnover: "2.1", sales: { traditional: [80, 12, 8], ecommerce: [78, 12, 10], qcommerce: [75, 15, 10] }, coords: { top: '50%', left: '42%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.9k", stockRM: "8.1k", demand: "3.0k", capacity: "98%", capacityColor: "text-green-600", turnover: "3.9", sales: { traditional: [65, 20, 15], ecommerce: [60, 22, 18], qcommerce: [55, 25, 20] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "1.5k", stockRM: "4.5k", demand: "3.5k", capacity: "75%", capacityColor: "text-orange-500", turnover: "2.8", sales: { traditional: [60, 20, 20], ecommerce: [50, 25, 25], qcommerce: [45, 30, 25] }, coords: { top: '28%', left: '45%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.5k", stockRM: "1.8k", demand: "0.9k", capacity: "N/A", capacityColor: "text-gray-600", turnover: "2.2", sales: { traditional: [85, 10, 5], ecommerce: [80, 15, 5], qcommerce: [75, 20, 5] }, coords: { top: '45%', left: '50%' }, highlightColor: 'border-green-600', pulseColor: 'bg-green-500' },
-                        kolkata: { name: "Kolkata, West Bengal", stockFG: "1.2k", stockRM: "4.1k", demand: "2.8k", capacity: "72%", capacityColor: "text-orange-500", turnover: "2.5", sales: { traditional: [75, 15, 10], ecommerce: [70, 20, 10], qcommerce: [65, 20, 15] }, coords: { top: '48%', left: '80%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.0k", stockRM: "5.0k", demand: "2.1k", capacity: "80%", capacityColor: "text-orange-500", turnover: "2.9", sales: { traditional: [90, 8, 2], ecommerce: [85, 10, 5], qcommerce: [82, 13, 5] }, coords: { top: '50%', left: '25%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
-                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "1.3k", stockRM: "5.5k", demand: "2.7k", capacity: "85%", capacityColor: "text-orange-500", turnover: "3.1", sales: { traditional: [70, 18, 12], ecommerce: [60, 22, 18], qcommerce: [55, 25, 20] }, coords: { top: '65%', left: '50%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
+                         pune: { name: "Pune, Maharashtra", stockFG: "1.1k", stockRM: "3.2k", demand: "3.1k", capacity: 70, turnover: "2.1", sales: { traditional: [80, 12, 8], ecommerce: [78, 12, 10], qcommerce: [75, 15, 10] }, coords: [18.5204, 73.8567], highlightColor: '#DC2626' },
+                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.9k", stockRM: "8.1k", demand: "3.0k", capacity: 98, turnover: "3.9", sales: { traditional: [65, 20, 15], ecommerce: [60, 22, 18], qcommerce: [55, 25, 20] }, coords: [13.0827, 80.2707], highlightColor: '#EC4899' },
+                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "0.8k", stockRM: "4.0k", demand: "2.2k", capacity: 65, turnover: "2.5", sales: { traditional: [88, 8, 4], ecommerce: [85, 10, 5], qcommerce: [82, 12, 6] }, coords: [28.4595, 77.0266], highlightColor: '#3B82F6' },
+                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.5k", stockRM: "2.5k", demand: "1.0k", capacity: 75, turnover: "1.8", sales: { traditional: [90, 7, 3], ecommerce: [88, 9, 3], qcommerce: [85, 10, 5] }, coords: [23.2599, 77.4126], highlightColor: '#9333EA' },
+                        kolkata: { name: "Kolkata, West Bengal", stockFG: "1.4k", stockRM: "5.0k", demand: "2.8k", capacity: 80, turnover: "2.9", sales: { traditional: [78, 15, 7], ecommerce: [75, 18, 7], qcommerce: [70, 22, 8] }, coords: [22.5726, 88.3639], highlightColor: '#22C55E' },
+                        rajkot: { name: "Rajkot, Gujarat", stockFG: "0.7k", stockRM: "3.1k", demand: "1.5k", capacity: 85, turnover: "2.4", sales: { traditional: [82, 10, 8], ecommerce: [80, 12, 8], qcommerce: [77, 15, 8] }, coords: [22.3039, 70.8022], highlightColor: '#F59E0B' },
+                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "1.2k", stockRM: "4.5k", demand: "2.4k", capacity: 78, turnover: "2.8", sales: { traditional: [80, 13, 7], ecommerce: [77, 16, 7], qcommerce: [74, 19, 7] }, coords: [17.3850, 78.4867], highlightColor: '#4F46E5' },
                     }
                 }
             };
             
-            // --- DOM Element References ---
             const scenarioSelect = document.getElementById('scenario-select');
             const locationSelect = document.getElementById('location-select');
+            const forecastTableBody = document.getElementById('forecast-data-table');
+            let demandChart, map, highlightMarker, cityMarkers = {};
 
-            // --- Main update function ---
+            function animateValue(element, start, end, duration, isPercentage = false, suffix = '') {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    let currentValue = progress * (end - start) + start;
+                    if (isPercentage) element.innerHTML = `${currentValue.toFixed(1)}%`;
+                    else if (suffix) element.innerHTML = `${currentValue.toFixed(1)} ${suffix}`;
+                    else element.innerHTML = Math.floor(currentValue);
+                    if (progress < 1) window.requestAnimationFrame(step);
+                };
+                window.requestAnimationFrame(step);
+            }
+
             function updateDashboard() {
-                const currentScenario = scenarioSelect.value;
-                const currentLocation = locationSelect.value;
-                const scenarioData = dashboardData[currentScenario];
-                const locationData = scenarioData.locations[currentLocation];
+                const scenario = scenarioSelect.value;
+                const locationKey = locationSelect.value;
+                const scenarioData = dashboardData[scenario];
+                const locationData = scenarioData.locations[locationKey];
                 if (!scenarioData || !locationData) return;
-                
-                // Update KPIs
-                Object.keys(scenarioData.kpis).forEach(key => {
-                    const kpi = scenarioData.kpis[key];
-                    const elementId = `kpi-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
-                    document.getElementById(elementId).textContent = kpi.value;
-                    const deltaElement = document.getElementById(`${elementId}-delta`);
-                    deltaElement.innerHTML = `<span class="font-bold ${kpi.color}">${kpi.delta}</span> vs PM`;
-                });
 
-                // Update Plant Details
+                Object.entries(scenarioData.kpis).forEach(([key, kpi]) => {
+                    const elementId = `kpi-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
+                    const element = document.getElementById(elementId);
+                    const currentVal = parseFloat(element.innerText.replace(/[^0-9.]/g, '')) || 0;
+                    const isPercent = elementId.includes('service-level');
+                    const suffix = elementId.includes('value') ? 'L' : '';
+                    animateValue(element, currentVal, kpi.value, 400, isPercent, suffix);
+                    document.getElementById(`${elementId}-delta`).innerHTML = `<span class="font-bold ${kpi.color}">${kpi.delta}</span> vs PM`;
+                });
+                
                 document.getElementById('plant-name').textContent = locationData.name;
                 document.getElementById('stock-fg').textContent = locationData.stockFG;
                 document.getElementById('stock-rm').textContent = locationData.stockRM;
                 document.getElementById('demand-app').textContent = locationData.demand;
                 const capacityEl = document.getElementById('capacity');
-                capacityEl.textContent = locationData.capacity;
-                capacityEl.className = `font-bold text-lg ${locationData.capacityColor}`;
+                const currentCap = parseFloat(capacityEl.innerText.replace('%','')) || 0;
+                animateValue(capacityEl, currentCap, locationData.capacity, 400, true);
+                capacityEl.className = `font-bold text-lg transition-all-smooth ${locationData.capacity > 100 ? 'text-red-600' : locationData.capacity > 90 ? 'text-orange-500' : 'text-green-600'}`;
                 document.getElementById('turnover').textContent = locationData.turnover;
 
-                // Update Bar Charts
-                const updateBar = (el, d) => {
-                    el.innerHTML = `<div class="bg-gray-400 h-5 rounded-l-full flex items-center justify-center" style="width:${d[0]}%">${d[0]}</div><div class="bg-orange-500 h-5 flex items-center justify-center" style="width:${d[1]}%">${d[1]}</div><div class="bg-blue-500 h-5 rounded-r-full flex items-center justify-center" style="width:${d[2]}%">${d[2]}</div>`;
+                const updateBar = (elId, data) => {
+                    const el = document.getElementById(elId);
+                    const total = data.reduce((a, b) => a + b, 1);
+                    el.innerHTML = `<div class="bg-gray-400 h-5 rounded-l-full flex items-center justify-center transition-all-smooth" style="width:${data[0]/total*100}%">${data[0]}</div><div class="bg-orange-500 h-5 flex items-center justify-center transition-all-smooth" style="width:${data[1]/total*100}%">${data[1]}</div><div class="bg-blue-500 h-5 rounded-r-full flex items-center justify-center transition-all-smooth" style="width:${data[2]/total*100}%">${data[2]}</div>`;
                 };
-                updateBar(document.getElementById('bar-traditional'), locationData.sales.traditional);
-                updateBar(document.getElementById('bar-ecommerce'), locationData.sales.ecommerce);
-                updateBar(document.getElementById('bar-qcommerce'), locationData.sales.qcommerce);
+                updateBar('bar-traditional', locationData.sales.traditional);
+                updateBar('bar-ecommerce', locationData.sales.ecommerce);
+                updateBar('bar-qcommerce', locationData.sales.qcommerce);
 
-                // Update Map Highlight
-                const mapHighlight = document.getElementById('map-highlight');
-                mapHighlight.style.top = locationData.coords.top;
-                mapHighlight.style.left = locationData.coords.left;
-                mapHighlight.className = `absolute w-5 h-5 bg-white rounded-full transition-all duration-500 ${locationData.highlightColor}`;
-                mapHighlight.querySelector('div').className = `absolute inset-0 rounded-full pulse-animate ${locationData.pulseColor}`;
+                map.flyTo(locationData.coords, 7, { animate: true, duration: 1.0 });
+                highlightMarker.setLatLng(locationData.coords).setStyle({ color: locationData.highlightColor, fillColor: locationData.highlightColor });
                 
-                // Update Chart
-                demandChart.data.datasets[0].data = scenarioData.chartData.actual;
-                demandChart.data.datasets[1].data = scenarioData.chartData.estimated;
+                const chartData = scenarioData.chartData;
+                demandChart.data.labels = chartData.labels;
+                demandChart.data.datasets[0].data = chartData.historical;
+                demandChart.data.datasets[1].data = chartData.forecast;
+                demandChart.data.datasets[2].data = chartData.lowerBound;
+                demandChart.data.datasets[3].data = chartData.upperBound;
                 demandChart.update();
 
-                // Update Recommendations
-                const recommendationsList = document.getElementById('recommendations-list');
-                recommendationsList.innerHTML = scenarioData.recommendations.map(rec => `<li>${rec}</li>`).join('');
+                document.getElementById('recommendations-list').innerHTML = scenarioData.recommendations.map(rec => `<li>${rec}</li>`).join('');
+                forecastTableBody.innerHTML = '';
+                chartData.labels.forEach((label, i) => {
+                    const row = `
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="p-2 font-semibold">${label}</td>
+                            <td class="p-2">${chartData.historical[i] || '--'}</td>
+                            <td class="p-2 text-green-700 font-semibold">${chartData.forecast[i] || '--'}</td>
+                            <td class="p-2 text-gray-500">${chartData.lowerBound[i] ? `${chartData.lowerBound[i]} - ${chartData.upperBound[i]}` : '--'}</td>
+                        </tr>`;
+                    forecastTableBody.innerHTML += row;
+                });
+            }
+            
+            function createMap() {
+                map = L.map('map', { scrollWheelZoom: false }).setView([22.5937, 78.9629], 5);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    subdomains: 'abcd',
+                    maxZoom: 20
+                }).addTo(map);
+
+                const locations = dashboardData.normal.locations;
+                for (const locKey in locations) {
+                    const loc = locations[locKey];
+                    cityMarkers[locKey] = L.circleMarker(loc.coords, {
+                        radius: 6,
+                        fillColor: loc.highlightColor,
+                        color: "#fff",
+                        weight: 1.5,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map).bindPopup(`<b>${loc.name}</b>`);
+                }
+
+                highlightMarker = L.circle(locations.pune.coords, {
+                    radius: 30000,
+                    color: locations.pune.highlightColor,
+                    fillColor: locations.pune.highlightColor,
+                    fillOpacity: 0.5,
+                    className: 'leaflet-pulsing-icon'
+                }).addTo(map);
             }
 
-            // --- Chart.js Setup ---
-            const ctx = document.getElementById('demandChart').getContext('2d');
-            const demandChart = new Chart(ctx, { type: 'line', data: { labels: ['Jan-25', 'Feb-25', 'Mar-25', 'Apr-25'], datasets: [ { label: 'Actual', borderColor: '#2563eb', backgroundColor: '#2563eb', tension: 0.1, pointRadius: 5, pointStyle: 'rectRot' }, { label: 'Estimated', borderColor: '#16a34a', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.1, pointRadius: 5 } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Units Sold (in thousands)' } }, scales: { y: { beginAtZero: false } } } });
-
-            // --- Event Listeners ---
+            function createChart() {
+                const ctx = document.getElementById('demandChart').getContext('2d');
+                demandChart = new Chart(ctx, { 
+                    type: 'line', 
+                    data: { labels: [], datasets: [ 
+                        { label: 'Historical Sales', data: [], borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.2, pointRadius: 4, fill: false }, 
+                        { label: 'ARIMA Forecast', data: [], borderColor: '#16a34a', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.2, pointRadius: 4, fill: false },
+                        { label: 'Lower Bound', data: [], borderColor: 'rgba(22, 163, 74, 0.2)', backgroundColor: 'rgba(22, 163, 74, 0.1)', pointRadius: 0, fill: '+1', borderDash: [2,2] },
+                        { label: 'Upper Bound', data: [], borderColor: 'rgba(22, 163, 74, 0.2)', backgroundColor: 'rgba(22, 163, 74, 0.1)', pointRadius: 0, fill: false }
+                    ]}, 
+                    options: { 
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }, 
+                        scales: { y: { beginAtZero: false, title: { display: true, text: 'Units Sold (k)' } } } 
+                    } 
+                });
+            }
+            
             scenarioSelect.addEventListener('change', updateDashboard);
             locationSelect.addEventListener('change', updateDashboard);
-
-            // --- Initial Load ---
+            
+            createMap();
+            createChart();
             updateDashboard();
         });
     </script>
