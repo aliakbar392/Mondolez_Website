@@ -104,7 +104,11 @@
                             </svg>
                             <!-- Static Map Points -->
                             <div class="absolute w-3 h-3 bg-blue-600 rounded-full ring-2 ring-white" style="top: 48%; left: 38%;" title="Mumbai (Manufacturing)"></div>
-                            <div class="absolute w-3 h-3 bg-red-600 rounded-full ring-2 ring-white" style="top: 78%; left: 48%;" title="Chennai (Warehouse)"></div>
+                            <div class="absolute w-3 h-3 bg-red-600 rounded-full ring-2 ring-white" style="top: 28%; left: 45%;" title="Gurgaon (Warehouse)"></div>
+                            <div class="absolute w-3 h-3 bg-green-600 rounded-full ring-2 ring-white" style="top: 45%; left: 50%;" title="Bhopal (RDC)"></div>
+                            <div class="absolute w-3 h-3 bg-blue-600 rounded-full ring-2 ring-white" style="top: 48%; left: 80%;" title="Kolkata (Manufacturing)"></div>
+                            <div class="absolute w-3 h-3 bg-red-600 rounded-full ring-2 ring-white" style="top: 50%; left: 25%;" title="Rajkot (Warehouse)"></div>
+                            <div class="absolute w-3 h-3 bg-red-600 rounded-full ring-2 ring-white" style="top: 65%; left: 50%;" title="Hyderabad (Warehouse)"></div>
                             <div class="absolute w-3 h-3 bg-green-600 rounded-full ring-2 ring-white" style="top: 80%; left: 35%;" title="Kerala (RDC)"></div>
                             <!-- Dynamic Highlight -->
                             <div id="map-highlight" class="absolute w-5 h-5 border-4 border-blue-600 bg-white rounded-full transition-all duration-500" style="top: 50%; left: 42%;">
@@ -120,6 +124,11 @@
                             <select id="location-select" class="w-full p-2 border rounded-md text-sm">
                                 <option value="pune" selected>Pune</option>
                                 <option value="chennai">Chennai</option>
+                                <option value="gurgaon">Gurgaon</option>
+                                <option value="bhopal">Bhopal</option>
+                                <option value="kolkata">Kolkata</option>
+                                <option value="rajkot">Rajkot</option>
+                                <option value="hyderabad">Hyderabad</option>
                             </select>
                             <select class="w-full p-2 border rounded-md text-sm"><option>Select: Category</option><option>Premium</option><option>Gifting</option></select>
                         </div>
@@ -200,7 +209,12 @@
                     ],
                     locations: {
                         pune: { name: "Pune, Maharashtra", stockFG: "2.1k", stockRM: "8.9k", demand: "3.4k", capacity: "101%", capacityColor: "text-red-600", turnover: "4.2", sales: { traditional: [76, 15, 9], ecommerce: [73, 15, 12], qcommerce: [72, 15, 13] }, coords: { top: '50%', left: '42%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.8k", stockRM: "7.2k", demand: "2.9k", capacity: "95%", capacityColor: "text-green-600", turnover: "3.8", sales: { traditional: [60, 25, 15], ecommerce: [55, 25, 20], qcommerce: [50, 28, 22] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
+                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.8k", stockRM: "7.2k", demand: "2.9k", capacity: "95%", capacityColor: "text-green-600", turnover: "3.8", sales: { traditional: [60, 25, 15], ecommerce: [55, 25, 20], qcommerce: [50, 28, 22] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "2.5k", stockRM: "9.1k", demand: "3.9k", capacity: "98%", capacityColor: "text-green-600", turnover: "4.5", sales: { traditional: [50, 25, 25], ecommerce: [40, 30, 30], qcommerce: [35, 35, 30] }, coords: { top: '28%', left: '45%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.8k", stockRM: "2.5k", demand: "1.1k", capacity: "N/A", capacityColor: "text-gray-600", turnover: "3.1", sales: { traditional: [80, 15, 5], ecommerce: [75, 20, 5], qcommerce: [70, 25, 5] }, coords: { top: '45%', left: '50%' }, highlightColor: 'border-green-600', pulseColor: 'bg-green-500' },
+                        kolkata: { name: "Kolkata, West Bengal", stockFG: "2.2k", stockRM: "8.5k", demand: "3.1k", capacity: "99%", capacityColor: "text-green-600", turnover: "4.0", sales: { traditional: [70, 20, 10], ecommerce: [65, 25, 10], qcommerce: [60, 25, 15] }, coords: { top: '48%', left: '80%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
+                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.5k", stockRM: "6.8k", demand: "2.5k", capacity: "92%", capacityColor: "text-green-600", turnover: "3.5", sales: { traditional: [85, 10, 5], ecommerce: [80, 15, 5], qcommerce: [78, 17, 5] }, coords: { top: '50%', left: '25%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "1.9k", stockRM: "7.8k", demand: "3.0k", capacity: "96%", capacityColor: "text-green-600", turnover: "3.9", sales: { traditional: [65, 20, 15], ecommerce: [55, 25, 20], qcommerce: [50, 30, 20] }, coords: { top: '65%', left: '50%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
                     }
                 },
                 festive: {
@@ -217,7 +231,12 @@
                     ],
                     locations: {
                         pune: { name: "Pune, Maharashtra", stockFG: "3.5k", stockRM: "10.1k", demand: "5.8k", capacity: "115%", capacityColor: "text-red-600", turnover: "5.5", sales: { traditional: [40, 30, 30], ecommerce: [35, 30, 35], qcommerce: [30, 35, 35] }, coords: { top: '50%', left: '42%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "2.9k", stockRM: "9.5k", demand: "4.5k", capacity: "105%", capacityColor: "text-red-600", turnover: "4.9", sales: { traditional: [35, 35, 30], ecommerce: [30, 35, 35], qcommerce: [25, 40, 35] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
+                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "2.9k", stockRM: "9.5k", demand: "4.5k", capacity: "105%", capacityColor: "text-red-600", turnover: "4.9", sales: { traditional: [35, 35, 30], ecommerce: [30, 35, 35], qcommerce: [25, 40, 35] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "4.1k", stockRM: "11.2k", demand: "6.2k", capacity: "110%", capacityColor: "text-red-600", turnover: "6.1", sales: { traditional: [30, 35, 35], ecommerce: [25, 40, 35], qcommerce: [20, 40, 40] }, coords: { top: '28%', left: '45%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "1.2k", stockRM: "3.5k", demand: "1.8k", capacity: "N/A", capacityColor: "text-gray-600", turnover: "4.0", sales: { traditional: [70, 20, 10], ecommerce: [65, 25, 10], qcommerce: [60, 30, 10] }, coords: { top: '45%', left: '50%' }, highlightColor: 'border-green-600', pulseColor: 'bg-green-500' },
+                        kolkata: { name: "Kolkata, West Bengal", stockFG: "3.8k", stockRM: "10.5k", demand: "5.5k", capacity: "112%", capacityColor: "text-red-600", turnover: "5.2", sales: { traditional: [45, 30, 25], ecommerce: [40, 35, 25], qcommerce: [35, 35, 30] }, coords: { top: '48%', left: '80%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
+                        rajkot: { name: "Rajkot, Gujarat", stockFG: "2.5k", stockRM: "8.1k", demand: "3.5k", capacity: "102%", capacityColor: "text-red-600", turnover: "4.5", sales: { traditional: [75, 15, 10], ecommerce: [70, 20, 10], qcommerce: [65, 25, 10] }, coords: { top: '50%', left: '25%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "3.1k", stockRM: "9.8k", demand: "4.8k", capacity: "108%", capacityColor: "text-red-600", turnover: "5.0", sales: { traditional: [40, 30, 30], ecommerce: [35, 35, 30], qcommerce: [30, 40, 30] }, coords: { top: '65%', left: '50%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
                     }
                 },
                 disruption: {
@@ -234,7 +253,12 @@
                     ],
                     locations: {
                         pune: { name: "Pune, Maharashtra", stockFG: "1.1k", stockRM: "3.2k", demand: "3.1k", capacity: "70%", capacityColor: "text-orange-500", turnover: "2.1", sales: { traditional: [80, 12, 8], ecommerce: [78, 12, 10], qcommerce: [75, 15, 10] }, coords: { top: '50%', left: '42%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.9k", stockRM: "8.1k", demand: "3.0k", capacity: "98%", capacityColor: "text-green-600", turnover: "3.9", sales: { traditional: [65, 20, 15], ecommerce: [60, 22, 18], qcommerce: [55, 25, 20] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
+                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.9k", stockRM: "8.1k", demand: "3.0k", capacity: "98%", capacityColor: "text-green-600", turnover: "3.9", sales: { traditional: [65, 20, 15], ecommerce: [60, 22, 18], qcommerce: [55, 25, 20] }, coords: { top: '78%', left: '48%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "1.5k", stockRM: "4.5k", demand: "3.5k", capacity: "75%", capacityColor: "text-orange-500", turnover: "2.8", sales: { traditional: [60, 20, 20], ecommerce: [50, 25, 25], qcommerce: [45, 30, 25] }, coords: { top: '28%', left: '45%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.5k", stockRM: "1.8k", demand: "0.9k", capacity: "N/A", capacityColor: "text-gray-600", turnover: "2.2", sales: { traditional: [85, 10, 5], ecommerce: [80, 15, 5], qcommerce: [75, 20, 5] }, coords: { top: '45%', left: '50%' }, highlightColor: 'border-green-600', pulseColor: 'bg-green-500' },
+                        kolkata: { name: "Kolkata, West Bengal", stockFG: "1.2k", stockRM: "4.1k", demand: "2.8k", capacity: "72%", capacityColor: "text-orange-500", turnover: "2.5", sales: { traditional: [75, 15, 10], ecommerce: [70, 20, 10], qcommerce: [65, 20, 15] }, coords: { top: '48%', left: '80%' }, highlightColor: 'border-blue-600', pulseColor: 'bg-blue-500' },
+                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.0k", stockRM: "5.0k", demand: "2.1k", capacity: "80%", capacityColor: "text-orange-500", turnover: "2.9", sales: { traditional: [90, 8, 2], ecommerce: [85, 10, 5], qcommerce: [82, 13, 5] }, coords: { top: '50%', left: '25%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' },
+                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "1.3k", stockRM: "5.5k", demand: "2.7k", capacity: "85%", capacityColor: "text-orange-500", turnover: "3.1", sales: { traditional: [70, 18, 12], ecommerce: [60, 22, 18], qcommerce: [55, 25, 20] }, coords: { top: '65%', left: '50%' }, highlightColor: 'border-red-600', pulseColor: 'bg-red-500' }
                     }
                 }
             };
@@ -272,7 +296,7 @@
 
                 // Update Bar Charts
                 const updateBar = (el, d) => {
-                    el.innerHTML = `<div class="bg-gray-400 h-5 rounded-l-full f a jc" style="width:${d[0]}%">${d[0]}</div><div class="bg-orange-500 h-5 f a jc" style="width:${d[1]}%">${d[1]}</div><div class="bg-blue-500 h-5 rounded-r-full f a jc" style="width:${d[2]}%">${d[2]}</div>`;
+                    el.innerHTML = `<div class="bg-gray-400 h-5 rounded-l-full flex items-center justify-center" style="width:${d[0]}%">${d[0]}</div><div class="bg-orange-500 h-5 flex items-center justify-center" style="width:${d[1]}%">${d[1]}</div><div class="bg-blue-500 h-5 rounded-r-full flex items-center justify-center" style="width:${d[2]}%">${d[2]}</div>`;
                 };
                 updateBar(document.getElementById('bar-traditional'), locationData.sales.traditional);
                 updateBar(document.getElementById('bar-ecommerce'), locationData.sales.ecommerce);
@@ -309,4 +333,6 @@
     </script>
 </body>
 </html>
+
+
 
