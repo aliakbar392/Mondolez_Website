@@ -3,418 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MadForCad - Business Dashboard</title>
-    <!-- Tailwind CSS for styling -->
+    <title>LifePulse AI Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <!-- Chart.js for dashboard charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Leaflet.js for interactive maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* A slightly softer gray */
-        }
-        .font-serif {
-            font-family: 'Playfair Display', serif;
-        }
-        .bg-dark-chocolate { background-color: #3D2B1F; }
-        .text-dark-chocolate { color: #3D2B1F; }
-        
-        /* Animation for the map highlight */
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.8); opacity: 0; }
-        }
-        
-        /* Leaflet Pulsating Icon */
-        .leaflet-pulsing-icon {
-            border-radius: 50%;
-            box-shadow: 0 0 0 rgba(255, 0, 0, 0.4);
-            animation: pulse 2s infinite;
-        }
-
-        /* Smooth transitions for data changes */
-        .transition-all-smooth {
-            transition: all 0.4s ease-in-out;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
-<body class="text-gray-800 antialiased">
+<body class="pb-20">
 
-    <!-- Header Section -->
-    <header class="bg-dark-chocolate text-white py-4 shadow-lg">
-        <div class="container mx-auto text-center px-4">
-            <h1 class="font-serif text-2xl md:text-3xl tracking-wider">MadForCad Business Dashboard</h1>
-            <p class="text-sm opacity-80">(Internal Analytics Mock-Up)</p>
+    <nav class="sticky top-0 z-50 glass border-b border-slate-200">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight">Life<span class="text-blue-600">Pulse</span></span>
+            </div>
+            <div class="flex bg-slate-100 p-1 rounded-xl">
+                <button onclick="openTab(event, 'dashboard')" class="tab-link px-4 py-2 rounded-lg text-sm font-bold active bg-white shadow-sm text-blue-600">Home</button>
+                <button onclick="openTab(event, 'records')" class="tab-link px-4 py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-blue-600">Upload</button>
+                <button onclick="openTab(event, 'analytics')" class="tab-link px-4 py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-blue-600">Analytics</button>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Dashboard Content -->
-    <main class="container mx-auto p-4 md:p-8 max-w-7xl">
-        
-        <!-- Dashboard Section -->
-        <section class="bg-white p-4 md:p-6 rounded-lg shadow-xl border border-gray-200">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-2">
-                 <h3 class="font-serif text-2xl md:text-3xl text-center text-dark-chocolate">Analytics Dashboard</h3>
-                 <div class="mt-4 md:mt-0">
-                     <label for="scenario-select" class="text-sm font-semibold text-gray-700">Select Scenario:</label>
-                     <select id="scenario-select" class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500 text-sm">
-                         <option value="normal" selected>Normal Operations</option>
-                         <option value="festive">Festive Season Surge</option>
-                         <option value="disruption">Supply Chain Disruption</option>
-                     </select>
-                 </div>
-            </div>
-            <div class="bg-yellow-400 h-1 w-24 mx-auto mb-8"></div>
+    <main class="max-w-xl mx-auto px-6 mt-8">
 
-            <!-- KPI Cards -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center text-dark-chocolate">
-                <div class="bg-purple-50 p-3 rounded-lg shadow border border-purple-200">
-                    <p id="kpi-inventory-units" class="font-bold text-2xl md:text-3xl transition-all-smooth">311</p>
-                    <p id="kpi-inventory-units-delta" class="text-sm font-semibold"><span class="font-bold text-green-600">▲ 18.7%</span> vs PM</p>
-                    <p class="text-xs text-gray-600 mt-1">(Inventory Units)</p>
-                </div>
-                <div class="bg-red-50 p-3 rounded-lg shadow border border-red-200">
-                    <p id="kpi-inventory-value" class="font-bold text-2xl md:text-3xl transition-all-smooth">21.6 L</p>
-                    <p id="kpi-inventory-value-delta" class="text-sm font-semibold"><span class="font-bold text-green-600">▲ 6.8%</span> vs PM</p>
-                    <p class="text-xs text-gray-600 mt-1">(Inventory Value)</p>
-                </div>
-                <div class="bg-blue-50 p-3 rounded-lg shadow border border-blue-200">
-                    <p id="kpi-service-level" class="font-bold text-2xl md:text-3xl transition-all-smooth">91.2%</p>
-                    <p id="kpi-service-level-delta" class="text-sm font-semibold"><span class="font-bold text-red-600">▼ 1.9%</span> vs PM</p>
-                    <p class="text-xs text-gray-600 mt-1">(Service Level)</p>
-                </div>
-                <div class="bg-green-50 p-3 rounded-lg shadow border border-green-200">
-                    <p id="kpi-sales-value" class="font-bold text-2xl md:text-3xl transition-all-smooth">86.5 L</p>
-                    <p id="kpi-sales-value-delta" class="text-sm font-semibold"><span class="font-bold text-green-600">▲ 5.2%</span> vs PM</p>
-                    <p class="text-xs text-gray-600 mt-1">(Sales Value)</p>
-                </div>
+        <div id="dashboard" class="tab-content active">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold">Your Progress</h2>
+                <p class="text-slate-500 text-sm italic">"Keep going, Alex! You're 50pts away from Level 15."</p>
             </div>
 
-            <!-- Plant Level Summaries -->
-            <div class="mt-8 pt-6 border-t-2 border-yellow-400">
-                <h4 class="font-serif text-xl text-center mb-6 text-dark-chocolate">Plant Level Summaries</h4>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Map & Filters -->
-                    <div class="border p-4 rounded-lg shadow-inner bg-gray-50">
-                        <p class="text-sm font-bold mb-4">MadForCad Supply Chain Network in India</p>
-                         <div id="map" class="w-full h-80 md:h-96 rounded-lg z-0"></div>
-                        <div class="mt-4">
-                            <label for="location-select" class="sr-only">Select Location</label>
-                            <select id="location-select" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500 text-sm">
-                                <option value="pune" selected>Pune</option>
-                                <option value="chennai">Chennai</option>
-                                <option value="gurgaon">Gurgaon</option>
-                                <option value="bhopal">Bhopal</option>
-                                <option value="kolkata">Kolkata</option>
-                                <option value="rajkot">Rajkot</option>
-                                <option value="hyderabad">Hyderabad</option>
-                            </select>
-                        </div>
+            <div class="bg-white rounded-[32px] p-8 shadow-xl shadow-blue-100/40 mb-6 text-center border border-slate-50">
+                <div class="inline-flex items-center justify-center p-1 rounded-full bg-blue-50 mb-4 px-4 py-1">
+                    <i class="fas fa-crown text-amber-500 text-xs mr-2"></i>
+                    <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Master Rank</span>
+                </div>
+                <div class="relative w-40 h-40 mx-auto mb-4">
+                    <svg class="w-full h-full -rotate-90">
+                        <circle cx="80" cy="80" r="70" stroke="#f1f5f9" stroke-width="12" fill="transparent" />
+                        <circle cx="80" cy="80" r="70" stroke="#2563eb" stroke-width="12" fill="transparent" stroke-dasharray="440" stroke-dashoffset="70" stroke-linecap="round" />
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-4xl font-black">840</span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Health Score</span>
                     </div>
-                     <!-- Details & Charts -->
-                    <div class="space-y-4">
-                        <div class="border p-4 rounded-lg shadow-inner bg-gray-50">
-                            <p id="plant-name" class="font-bold text-lg text-dark-chocolate">Pune, Maharashtra</p>
-                            <div class="space-y-1.5 mt-2">
-                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Current Stock (FG)</span><span id="stock-fg" class="font-bold text-lg transition-all-smooth">2.1k</span></div>
-                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Current Stock (RM)</span><span id="stock-rm" class="font-bold text-lg transition-all-smooth">8.9k</span></div>
-                                <div class="flex justify-between items-center bg-green-50 p-2 rounded"><span>Demand from App</span><span id="demand-app" class="font-bold text-lg transition-all-smooth">3.4k</span></div>
-                                <div class="flex justify-between items-center bg-orange-50 p-2 rounded"><span>Capacity Utilization</span><span id="capacity" class="font-bold text-lg text-red-600 transition-all-smooth">101%</span></div>
-                                <div class="flex justify-between items-center bg-blue-50 p-2 rounded"><span>Inventory Turnover</span><span id="turnover" class="font-bold text-lg transition-all-smooth">4.2</span></div>
-                            </div>
-                        </div>
-                        <div class="border p-4 rounded-lg text-sm shadow-inner bg-gray-50">
-                            <div class="flex justify-end space-x-4 mb-2 text-xs">
-                                <div class="flex items-center"><div class="w-3 h-3 bg-gray-400 mr-1"></div>Affordable</div>
-                                <div class="flex items-center"><div class="w-3 h-3 bg-orange-500 mr-1"></div>Premium</div>
-                                <div class="flex items-center"><div class="w-3 h-3 bg-blue-500 mr-1"></div>Gifting</div>
-                            </div>
-                            <div class="space-y-3">
-                                <p class="font-semibold -mb-2 text-xs text-gray-600">Traditional</p>
-                                <div id="bar-traditional" class="w-full bg-gray-200 rounded-full h-5 flex text-white text-xs items-center font-semibold"></div>
-                                <p class="font-semibold -mb-2 text-xs text-gray-600">E-Commerce</p>
-                                <div id="bar-ecommerce" class="w-full bg-gray-200 rounded-full h-5 flex text-white text-xs items-center font-semibold"></div>
-                                <p class="font-semibold -mb-2 text-xs text-gray-600">Q-Commerce</p>
-                                <div id="bar-qcommerce" class="w-full bg-gray-200 rounded-full h-5 flex text-white text-xs items-center font-semibold"></div>
-                            </div>
-                        </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-2">
+                    <div class="bg-slate-50 p-3 rounded-2xl">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase">Daily Streak</p>
+                        <p class="font-bold text-lg text-orange-500"><i class="fas fa-fire"></i> 12 Days</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-2xl">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase">Points Earned</p>
+                        <p class="font-bold text-lg text-blue-600">12,450</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Demand Forecasting -->
-            <div class="mt-8 pt-6 border-t-2 border-yellow-400">
-                <h4 class="font-serif text-xl text-center mb-6 text-dark-chocolate">Demand Forecasting (ARIMA Model Simulation)</h4>
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
-                    <div class="lg:col-span-3 border p-4 rounded-lg shadow-inner bg-gray-50 h-72 md:h-96">
-                        <canvas id="demandChart"></canvas>
+            <div class="space-y-4">
+                <h3 class="font-bold">Daily Quests</h3>
+                <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center"><i class="fas fa-walking"></i></div>
+                        <div><p class="text-sm font-bold">10k Steps Challenge</p><p class="text-xs text-slate-400">8,420 / 10,000</p></div>
                     </div>
-                    <div class="lg:col-span-2 space-y-4">
-                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
-                            <h5 class="font-bold text-lg text-green-800">Model Recommendations</h5>
-                            <ul id="recommendations-list" class="list-decimal list-inside text-sm mt-2 space-y-1.5"></ul>
-                        </div>
-                        <div class="border p-4 rounded-lg shadow-inner bg-gray-50">
-                            <h5 class="font-bold text-lg text-dark-chocolate mb-2">Forecast Data</h5>
-                            <div class="overflow-x-auto max-h-48">
-                                <table class="w-full text-sm text-left">
-                                    <thead class="bg-gray-200 sticky top-0">
-                                        <tr>
-                                            <th class="p-2">Month</th>
-                                            <th class="p-2">Sales</th>
-                                            <th class="p-2">Forecast</th>
-                                            <th class="p-2">Range</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="forecast-data-table">
-                                        <!-- Data will be populated by script -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                    <span class="text-blue-600 font-bold text-sm">+20 XP</span>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <div id="records" class="tab-content">
+            <h2 class="text-2xl font-bold mb-2">Health Wallet</h2>
+            <p class="text-slate-500 text-sm mb-6">Upload documents for AI-enabled record syncing.</p>
+            
+            <div class="bg-white p-8 rounded-[32px] border-2 border-dashed border-blue-200 text-center mb-6 hover:bg-blue-50 transition-colors cursor-pointer group">
+                <div class="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200 group-hover:rotate-6 transition">
+                    <i class="fas fa-camera text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-lg">Scan Prescription</h3>
+                <p class="text-sm text-slate-400">PDF, JPG, or PNG up to 10MB</p>
+                <button class="mt-6 bg-blue-600 text-white w-full py-3 rounded-xl font-bold">Browse Files</button>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="font-bold text-sm text-slate-400 uppercase tracking-widest">Recent Uploads</h3>
+                <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-file-pdf text-red-500 text-xl"></i>
+                        <div><p class="text-sm font-bold">Lab_Report_Feb10.pdf</p><p class="text-[10px] text-green-500 font-bold">Verified by AI</p></div>
+                    </div>
+                    <i class="fas fa-chevron-right text-slate-300"></i>
+                </div>
+                <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-image text-blue-500 text-xl"></i>
+                        <div><p class="text-sm font-bold">Pharmacy_Bill_Jan.jpg</p><p class="text-[10px] text-slate-400 font-bold">Pending Review</p></div>
+                    </div>
+                    <i class="fas fa-chevron-right text-slate-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="analytics" class="tab-content">
+            <h2 class="text-2xl font-bold mb-6">Predictive Insights</h2>
+            
+            <div class="bg-indigo-900 rounded-[32px] p-6 text-white mb-6 relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-2">AI Forecast</p>
+                    <h3 class="text-xl font-bold mb-4 italic">"Low Risk of Chronic Fatigue"</h3>
+                    <div class="h-24 flex items-end gap-2 mb-4">
+                        <div class="w-full bg-indigo-500 h-[40%] rounded-t-sm"></div>
+                        <div class="w-full bg-indigo-400 h-[60%] rounded-t-sm"></div>
+                        <div class="w-full bg-indigo-300 h-[80%] rounded-t-sm"></div>
+                        <div class="w-full bg-white h-[95%] rounded-t-sm"></div>
+                        <div class="w-full bg-indigo-400 h-[70%] rounded-t-sm"></div>
+                    </div>
+                    <p class="text-xs text-indigo-100 opacity-80">Based on your activity levels and sleep patterns over the last 30 days.</p>
+                </div>
+                <i class="fas fa-chart-line absolute -bottom-4 -right-4 text-8xl text-indigo-800 opacity-30"></i>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Resting HR</p>
+                    <p class="text-2xl font-bold">72 <span class="text-sm font-normal text-slate-400">bpm</span></p>
+                    <div class="text-[10px] text-green-500 mt-2 font-bold"><i class="fas fa-arrow-down"></i> Optimal</div>
+                </div>
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Sleep Score</p>
+                    <p class="text-2xl font-bold">8h <span class="text-sm font-normal text-slate-400">12m</span></p>
+                    <div class="text-[10px] text-blue-500 mt-2 font-bold"><i class="fas fa-check"></i> 92% Quality</div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-blue-50 p-6 rounded-[32px] border border-blue-100">
+                <h4 class="font-bold text-blue-900 mb-2 italic"><i class="fas fa-robot mr-2"></i>AI Nudge</h4>
+                <p class="text-sm text-blue-800 leading-relaxed">Your hydration is 15% lower than last Tuesday. Drinking 2 more glasses of water today will prevent energy dips!</p>
+            </div>
+        </div>
+
     </main>
 
-    <!-- Footer Section -->
-    <footer class="bg-dark-chocolate text-white text-center p-6 mt-8">
-        <p>&copy; 2025 MadForCad. All Rights Reserved.</p>
-    </footer>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- Main Data Store ---
-            const dashboardData = {
-                normal: {
-                    kpis: {
-                        inventoryUnits: { value: 311, delta: "▲ 18.7%", color: "text-green-600" },
-                        inventoryValue: { value: 21.6, delta: "▲ 6.8%", color: "text-green-600" },
-                        serviceLevel: { value: 91.2, delta: "▼ 1.9%", color: "text-red-600" },
-                        salesValue: { value: 86.5, delta: "▲ 5.2%", color: "text-green-600" }
-                    },
-                    chartData: {
-                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
-                        historical: [180, 210, 190, 220, 205, null, null, null],
-                        forecast: [null, null, null, null, 215, 225, 230, 220],
-                        lowerBound: [null, null, null, null, 200, 210, 215, 205],
-                        upperBound: [null, null, null, null, 230, 240, 245, 235]
-                    },
-                    recommendations: [
-                        "Forecast indicates stable demand. Maintain current inventory strategy.",
-                        "Monitor Q-Commerce velocity in metro areas for potential upside."
-                    ],
-                    locations: {
-                        pune: { name: "Pune, Maharashtra", stockFG: "2.1k", stockRM: "8.9k", demand: "3.4k", capacity: 101, turnover: "4.2", sales: { traditional: [76, 15, 9], ecommerce: [73, 15, 12], qcommerce: [72, 15, 13] }, coords: [18.5204, 73.8567], highlightColor: '#DC2626' }, // red-600
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.8k", stockRM: "7.2k", demand: "2.9k", capacity: 95, turnover: "3.8", sales: { traditional: [60, 25, 15], ecommerce: [55, 25, 20], qcommerce: [50, 28, 22] }, coords: [13.0827, 80.2707], highlightColor: '#EC4899' }, // pink-500
-                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "1.5k", stockRM: "6.5k", demand: "2.5k", capacity: 92, turnover: "4.5", sales: { traditional: [80, 10, 10], ecommerce: [75, 15, 10], qcommerce: [70, 18, 12] }, coords: [28.4595, 77.0266], highlightColor: '#3B82F6' }, // blue-600
-                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.9k", stockRM: "4.1k", demand: "1.2k", capacity: 88, turnover: "3.1", sales: { traditional: [85, 10, 5], ecommerce: [82, 12, 6], qcommerce: [80, 15, 5] }, coords: [23.2599, 77.4126], highlightColor: '#9333EA' }, // purple-600
-                        kolkata: { name: "Kolkata, West Bengal", stockFG: "2.5k", stockRM: "9.8k", demand: "3.9k", capacity: 98, turnover: "4.8", sales: { traditional: [70, 20, 10], ecommerce: [65, 25, 10], qcommerce: [60, 28, 12] }, coords: [22.5726, 88.3639], highlightColor: '#22C55E' }, // green-500
-                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.1k", stockRM: "5.2k", demand: "1.9k", capacity: 94, turnover: "3.5", sales: { traditional: [78, 12, 10], ecommerce: [74, 16, 10], qcommerce: [71, 19, 10] }, coords: [22.3039, 70.8022], highlightColor: '#F59E0B' }, // amber-500
-                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "2.2k", stockRM: "9.1k", demand: "3.1k", capacity: 97, turnover: "4.1", sales: { traditional: [72, 18, 10], ecommerce: [68, 22, 10], qcommerce: [65, 25, 10] }, coords: [17.3850, 78.4867], highlightColor: '#4F46E5' }, // indigo-600
-                    }
-                },
-                festive: {
-                    kpis: {
-                        inventoryUnits: { value: 450, delta: "▲ 35.1%", color: "text-green-600" },
-                        inventoryValue: { value: 31.2, delta: "▲ 28.4%", color: "text-green-600" },
-                        serviceLevel: { value: 95.8, delta: "▲ 2.1%", color: "text-green-600" },
-                        salesValue: { value: 120.1, delta: "▲ 45.3%", color: "text-green-600" }
-                    },
-                    chartData: {
-                        labels: ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
-                        historical: [220, 250, 280, 310, null, null, null, null],
-                        forecast: [null, null, null, null, 320, 305, 290, 280],
-                        lowerBound: [null, null, null, null, 300, 290, 275, 265],
-                        upperBound: [null, null, null, null, 340, 320, 305, 295]
-                    },
-                    recommendations: [
-                        "Festive demand is tracking <strong>5% above forecast</strong>. Expedite replenishment for Gifting SKUs.",
-                        "Pune capacity is at <strong>115%</strong>. Consider diverting production of Affordable SKUs to another plant to prioritize Premium and Gifting categories."
-                    ],
-                     locations: {
-                        pune: { name: "Pune, Maharashtra", stockFG: "3.5k", stockRM: "10.1k", demand: "5.8k", capacity: 115, turnover: "5.5", sales: { traditional: [40, 30, 30], ecommerce: [35, 30, 35], qcommerce: [30, 35, 35] }, coords: [18.5204, 73.8567], highlightColor: '#DC2626' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "2.9k", stockRM: "9.5k", demand: "4.5k", capacity: 105, turnover: "4.9", sales: { traditional: [35, 35, 30], ecommerce: [30, 35, 35], qcommerce: [25, 40, 35] }, coords: [13.0827, 80.2707], highlightColor: '#EC4899' },
-                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "2.8k", stockRM: "8.1k", demand: "4.2k", capacity: 110, turnover: "5.8", sales: { traditional: [50, 25, 25], ecommerce: [45, 30, 25], qcommerce: [40, 35, 25] }, coords: [28.4595, 77.0266], highlightColor: '#3B82F6' },
-                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "1.5k", stockRM: "5.5k", demand: "2.5k", capacity: 99, turnover: "4.0", sales: { traditional: [60, 20, 20], ecommerce: [55, 25, 20], qcommerce: [50, 30, 20] }, coords: [23.2599, 77.4126], highlightColor: '#9333EA' },
-                        kolkata: { name: "Kolkata, West Bengal", stockFG: "3.8k", stockRM: "11.2k", demand: "5.5k", capacity: 108, turnover: "6.1", sales: { traditional: [45, 30, 25], ecommerce: [40, 35, 25], qcommerce: [35, 40, 25] }, coords: [22.5726, 88.3639], highlightColor: '#22C55E' },
-                        rajkot: { name: "Rajkot, Gujarat", stockFG: "1.9k", stockRM: "6.8k", demand: "3.1k", capacity: 102, turnover: "4.7", sales: { traditional: [55, 25, 20], ecommerce: [50, 30, 20], qcommerce: [45, 35, 20] }, coords: [22.3039, 70.8022], highlightColor: '#F59E0B' },
-                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "3.4k", stockRM: "10.5k", demand: "4.8k", capacity: 106, turnover: "5.3", sales: { traditional: [50, 28, 22], ecommerce: [45, 33, 22], qcommerce: [40, 38, 22] }, coords: [17.3850, 78.4867], highlightColor: '#4F46E5' },
-                    }
-                },
-                disruption: {
-                    kpis: {
-                        inventoryUnits: { value: 250, delta: "▼ 10.2%", color: "text-red-600" },
-                        inventoryValue: { value: 18.1, delta: "▼ 15.8%", color: "text-red-600" },
-                        serviceLevel: { value: 75.4, delta: "▼ 15.3%", color: "text-red-600" },
-                        salesValue: { value: 70.2, delta: "▼ 12.1%", color: "text-red-600" }
-                    },
-                    chartData: {
-                        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
-                        historical: [180, 210, 150, 130, null, null, null, null],
-                        forecast: [null, null, null, null, 145, 160, 170, 165],
-                        lowerBound: [null, null, null, null, 130, 145, 155, 150],
-                        upperBound: [null, null, null, null, 160, 175, 185, 180]
-                    },
-                    recommendations: [
-                        "A logistics delay has impacted RM supply to Pune, causing a <strong>critical drop in service levels</strong>.",
-                        "Prioritize available stock for Q-Commerce to protect high-margin channels. Re-route next RM shipment via an alternate carrier."
-                    ],
-                    locations: {
-                         pune: { name: "Pune, Maharashtra", stockFG: "1.1k", stockRM: "3.2k", demand: "3.1k", capacity: 70, turnover: "2.1", sales: { traditional: [80, 12, 8], ecommerce: [78, 12, 10], qcommerce: [75, 15, 10] }, coords: [18.5204, 73.8567], highlightColor: '#DC2626' },
-                        chennai: { name: "Chennai, Tamil Nadu", stockFG: "1.9k", stockRM: "8.1k", demand: "3.0k", capacity: 98, turnover: "3.9", sales: { traditional: [65, 20, 15], ecommerce: [60, 22, 18], qcommerce: [55, 25, 20] }, coords: [13.0827, 80.2707], highlightColor: '#EC4899' },
-                        gurgaon: { name: "Gurgaon, Haryana", stockFG: "0.8k", stockRM: "4.0k", demand: "2.2k", capacity: 65, turnover: "2.5", sales: { traditional: [88, 8, 4], ecommerce: [85, 10, 5], qcommerce: [82, 12, 6] }, coords: [28.4595, 77.0266], highlightColor: '#3B82F6' },
-                        bhopal: { name: "Bhopal, Madhya Pradesh", stockFG: "0.5k", stockRM: "2.5k", demand: "1.0k", capacity: 75, turnover: "1.8", sales: { traditional: [90, 7, 3], ecommerce: [88, 9, 3], qcommerce: [85, 10, 5] }, coords: [23.2599, 77.4126], highlightColor: '#9333EA' },
-                        kolkata: { name: "Kolkata, West Bengal", stockFG: "1.4k", stockRM: "5.0k", demand: "2.8k", capacity: 80, turnover: "2.9", sales: { traditional: [78, 15, 7], ecommerce: [75, 18, 7], qcommerce: [70, 22, 8] }, coords: [22.5726, 88.3639], highlightColor: '#22C55E' },
-                        rajkot: { name: "Rajkot, Gujarat", stockFG: "0.7k", stockRM: "3.1k", demand: "1.5k", capacity: 85, turnover: "2.4", sales: { traditional: [82, 10, 8], ecommerce: [80, 12, 8], qcommerce: [77, 15, 8] }, coords: [22.3039, 70.8022], highlightColor: '#F59E0B' },
-                        hyderabad: { name: "Hyderabad, Telangana", stockFG: "1.2k", stockRM: "4.5k", demand: "2.4k", capacity: 78, turnover: "2.8", sales: { traditional: [80, 13, 7], ecommerce: [77, 16, 7], qcommerce: [74, 19, 7] }, coords: [17.3850, 78.4867], highlightColor: '#4F46E5' },
-                    }
-                }
-            };
-            
-            const scenarioSelect = document.getElementById('scenario-select');
-            const locationSelect = document.getElementById('location-select');
-            const forecastTableBody = document.getElementById('forecast-data-table');
-            let demandChart, map, highlightMarker, cityMarkers = {};
-
-            function animateValue(element, start, end, duration, isPercentage = false, suffix = '') {
-                let startTimestamp = null;
-                const step = (timestamp) => {
-                    if (!startTimestamp) startTimestamp = timestamp;
-                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                    let currentValue = progress * (end - start) + start;
-                    if (isPercentage) element.innerHTML = `${currentValue.toFixed(1)}%`;
-                    else if (suffix) element.innerHTML = `${currentValue.toFixed(1)} ${suffix}`;
-                    else element.innerHTML = Math.floor(currentValue);
-                    if (progress < 1) window.requestAnimationFrame(step);
-                };
-                window.requestAnimationFrame(step);
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
             }
-
-            function updateDashboard() {
-                const scenario = scenarioSelect.value;
-                const locationKey = locationSelect.value;
-                const scenarioData = dashboardData[scenario];
-                const locationData = scenarioData.locations[locationKey];
-                if (!scenarioData || !locationData) return;
-
-                Object.entries(scenarioData.kpis).forEach(([key, kpi]) => {
-                    const elementId = `kpi-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
-                    const element = document.getElementById(elementId);
-                    const currentVal = parseFloat(element.innerText.replace(/[^0-9.]/g, '')) || 0;
-                    const isPercent = elementId.includes('service-level');
-                    const suffix = elementId.includes('value') ? 'L' : '';
-                    animateValue(element, currentVal, kpi.value, 400, isPercent, suffix);
-                    document.getElementById(`${elementId}-delta`).innerHTML = `<span class="font-bold ${kpi.color}">${kpi.delta}</span> vs PM`;
-                });
-                
-                document.getElementById('plant-name').textContent = locationData.name;
-                document.getElementById('stock-fg').textContent = locationData.stockFG;
-                document.getElementById('stock-rm').textContent = locationData.stockRM;
-                document.getElementById('demand-app').textContent = locationData.demand;
-                const capacityEl = document.getElementById('capacity');
-                const currentCap = parseFloat(capacityEl.innerText.replace('%','')) || 0;
-                animateValue(capacityEl, currentCap, locationData.capacity, 400, true);
-                capacityEl.className = `font-bold text-lg transition-all-smooth ${locationData.capacity > 100 ? 'text-red-600' : locationData.capacity > 90 ? 'text-orange-500' : 'text-green-600'}`;
-                document.getElementById('turnover').textContent = locationData.turnover;
-
-                const updateBar = (elId, data) => {
-                    const el = document.getElementById(elId);
-                    const total = data.reduce((a, b) => a + b, 1);
-                    el.innerHTML = `<div class="bg-gray-400 h-5 rounded-l-full flex items-center justify-center transition-all-smooth" style="width:${data[0]/total*100}%">${data[0]}</div><div class="bg-orange-500 h-5 flex items-center justify-center transition-all-smooth" style="width:${data[1]/total*100}%">${data[1]}</div><div class="bg-blue-500 h-5 rounded-r-full flex items-center justify-center transition-all-smooth" style="width:${data[2]/total*100}%">${data[2]}</div>`;
-                };
-                updateBar('bar-traditional', locationData.sales.traditional);
-                updateBar('bar-ecommerce', locationData.sales.ecommerce);
-                updateBar('bar-qcommerce', locationData.sales.qcommerce);
-
-                map.flyTo(locationData.coords, 7, { animate: true, duration: 1.0 });
-                highlightMarker.setLatLng(locationData.coords).setStyle({ color: locationData.highlightColor, fillColor: locationData.highlightColor });
-                
-                const chartData = scenarioData.chartData;
-                demandChart.data.labels = chartData.labels;
-                demandChart.data.datasets[0].data = chartData.historical;
-                demandChart.data.datasets[1].data = chartData.forecast;
-                demandChart.data.datasets[2].data = chartData.lowerBound;
-                demandChart.data.datasets[3].data = chartData.upperBound;
-                demandChart.update();
-
-                document.getElementById('recommendations-list').innerHTML = scenarioData.recommendations.map(rec => `<li>${rec}</li>`).join('');
-                forecastTableBody.innerHTML = '';
-                chartData.labels.forEach((label, i) => {
-                    const row = `
-                        <tr class="border-b border-gray-200 hover:bg-gray-50">
-                            <td class="p-2 font-semibold">${label}</td>
-                            <td class="p-2">${chartData.historical[i] || '--'}</td>
-                            <td class="p-2 text-green-700 font-semibold">${chartData.forecast[i] || '--'}</td>
-                            <td class="p-2 text-gray-500">${chartData.lowerBound[i] ? `${chartData.lowerBound[i]} - ${chartData.upperBound[i]}` : '--'}</td>
-                        </tr>`;
-                    forecastTableBody.innerHTML += row;
-                });
+            tablinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("bg-white", "shadow-sm", "text-blue-600");
+                tablinks[i].classList.add("text-slate-500");
             }
-            
-            function createMap() {
-                map = L.map('map', { scrollWheelZoom: false }).setView([22.5937, 78.9629], 5);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 20
-                }).addTo(map);
-
-                const locations = dashboardData.normal.locations;
-                for (const locKey in locations) {
-                    const loc = locations[locKey];
-                    cityMarkers[locKey] = L.circleMarker(loc.coords, {
-                        radius: 6,
-                        fillColor: loc.highlightColor,
-                        color: "#fff",
-                        weight: 1.5,
-                        opacity: 1,
-                        fillOpacity: 0.8
-                    }).addTo(map).bindPopup(`<b>${loc.name}</b>`);
-                }
-
-                highlightMarker = L.circle(locations.pune.coords, {
-                    radius: 30000,
-                    color: locations.pune.highlightColor,
-                    fillColor: locations.pune.highlightColor,
-                    fillOpacity: 0.5,
-                    className: 'leaflet-pulsing-icon'
-                }).addTo(map);
-            }
-
-            function createChart() {
-                const ctx = document.getElementById('demandChart').getContext('2d');
-                demandChart = new Chart(ctx, { 
-                    type: 'line', 
-                    data: { labels: [], datasets: [ 
-                        { label: 'Historical Sales', data: [], borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.2, pointRadius: 4, fill: false }, 
-                        { label: 'ARIMA Forecast', data: [], borderColor: '#16a34a', backgroundColor: 'transparent', borderDash: [5, 5], tension: 0.2, pointRadius: 4, fill: false },
-                        { label: 'Lower Bound', data: [], borderColor: 'rgba(22, 163, 74, 0.2)', backgroundColor: 'rgba(22, 163, 74, 0.1)', pointRadius: 0, fill: '+1', borderDash: [2,2] },
-                        { label: 'Upper Bound', data: [], borderColor: 'rgba(22, 163, 74, 0.2)', backgroundColor: 'rgba(22, 163, 74, 0.1)', pointRadius: 0, fill: false }
-                    ]}, 
-                    options: { 
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }, 
-                        scales: { y: { beginAtZero: false, title: { display: true, text: 'Units Sold (k)' } } } 
-                    } 
-                });
-            }
-            
-            scenarioSelect.addEventListener('change', updateDashboard);
-            locationSelect.addEventListener('change', updateDashboard);
-            
-            createMap();
-            createChart();
-            updateDashboard();
-        });
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("bg-white", "shadow-sm", "text-blue-600");
+            evt.currentTarget.classList.remove("text-slate-500");
+        }
     </script>
 </body>
 </html>
