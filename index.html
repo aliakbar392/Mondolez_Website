@@ -3,172 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifePulse AI Portal</title>
+    <title>LifePulse | Unified Health App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        .tab-content.active { display: block; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; }
+        .med-check:checked + label { background-color: #dcfce7; border-color: #22c55e; color: #166534; text-decoration: line-through; opacity: 0.7; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-24">
 
-    <nav class="sticky top-0 z-50 glass border-b border-slate-200">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav class="sticky top-0 z-50 glass px-6 py-4">
+        <div class="max-w-xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                    <i class="fas fa-heartbeat"></i>
-                </div>
-                <span class="font-extrabold text-xl tracking-tight">Life<span class="text-blue-600">Pulse</span></span>
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white"><i class="fas fa-bolt"></i></div>
+                <span class="font-bold text-lg">LifePulse</span>
             </div>
-            <div class="flex bg-slate-100 p-1 rounded-xl">
-                <button onclick="openTab(event, 'dashboard')" class="tab-link px-4 py-2 rounded-lg text-sm font-bold active bg-white shadow-sm text-blue-600">Home</button>
-                <button onclick="openTab(event, 'records')" class="tab-link px-4 py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-blue-600">Upload</button>
-                <button onclick="openTab(event, 'analytics')" class="tab-link px-4 py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-blue-600">Analytics</button>
+            <div class="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                <i class="fas fa-watch-apple text-green-600 text-xs"></i>
+                <span class="text-[10px] font-bold text-green-700 uppercase tracking-tighter">Wearable Synced</span>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-xl mx-auto px-6 mt-8">
+    <main class="max-w-xl mx-auto px-6 mt-6">
 
         <div id="dashboard" class="tab-content active">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold">Your Progress</h2>
-                <p class="text-slate-500 text-sm italic">"Keep going, Alex! You're 50pts away from Level 15."</p>
-            </div>
-
-            <div class="bg-white rounded-[32px] p-8 shadow-xl shadow-blue-100/40 mb-6 text-center border border-slate-50">
-                <div class="inline-flex items-center justify-center p-1 rounded-full bg-blue-50 mb-4 px-4 py-1">
-                    <i class="fas fa-crown text-amber-500 text-xs mr-2"></i>
-                    <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Master Rank</span>
+            <h2 class="text-2xl font-extrabold mb-1">Today's Pulse</h2>
+            <p class="text-slate-500 text-sm mb-6">Your preventive health at a glance.</p>
+            
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 mb-6 flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Next Medication</p>
+                    <p class="font-bold text-blue-600">Omega-3 (1,000mg)</p>
                 </div>
-                <div class="relative w-40 h-40 mx-auto mb-4">
-                    <svg class="w-full h-full -rotate-90">
-                        <circle cx="80" cy="80" r="70" stroke="#f1f5f9" stroke-width="12" fill="transparent" />
-                        <circle cx="80" cy="80" r="70" stroke="#2563eb" stroke-width="12" fill="transparent" stroke-dasharray="440" stroke-dashoffset="70" stroke-linecap="round" />
-                    </svg>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="text-4xl font-black">840</span>
-                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Health Score</span>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mt-2">
-                    <div class="bg-slate-50 p-3 rounded-2xl">
-                        <p class="text-[10px] text-slate-400 font-bold uppercase">Daily Streak</p>
-                        <p class="font-bold text-lg text-orange-500"><i class="fas fa-fire"></i> 12 Days</p>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-2xl">
-                        <p class="text-[10px] text-slate-400 font-bold uppercase">Points Earned</p>
-                        <p class="font-bold text-lg text-blue-600">12,450</p>
-                    </div>
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Time</p>
+                    <p class="font-bold">01:00 PM</p>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <h3 class="font-bold">Daily Quests</h3>
-                <div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[32px] p-8 text-white shadow-xl shadow-blue-200 mb-6 relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="text-lg font-bold opacity-80 mb-4">Current Score</h3>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-6xl font-black">840</span>
+                        <span class="text-blue-200 font-bold">/ 1000</span>
+                    </div>
+                    <p class="mt-4 text-sm bg-white/20 inline-block px-3 py-1 rounded-full">Top 5% in New York</p>
+                </div>
+                <i class="fas fa-star absolute -bottom-4 -right-4 text-9xl opacity-10"></i>
+            </div>
+        </div>
+
+        <div id="vitality" class="tab-content">
+            <h2 class="text-2xl font-extrabold mb-6">Digital Health Score</h2>
+            
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Activity Level</p>
+                    <div class="w-full bg-slate-100 h-1.5 rounded-full mb-2">
+                        <div class="bg-green-500 h-full w-[85%] rounded-full"></div>
+                    </div>
+                    <p class="font-bold text-sm">Great <span class="text-xs text-slate-400 font-normal">(8.4k steps)</span></p>
+                </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Med Adherence</p>
+                    <div class="w-full bg-slate-100 h-1.5 rounded-full mb-2">
+                        <div class="bg-blue-500 h-full w-[100%] rounded-full"></div>
+                    </div>
+                    <p class="font-bold text-sm">Perfect <span class="text-xs text-slate-400 font-normal">(3/3 taken)</span></p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="font-bold mb-4 flex items-center justify-between">
+                    Daily Medications
+                    <span class="text-xs text-blue-600 font-bold">Feb 13, 2026</span>
+                </h3>
+                <div class="space-y-3">
+                    <div>
+                        <input type="checkbox" id="med1" class="hidden med-check" checked>
+                        <label for="med1" class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer transition active:scale-95">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-pills text-blue-500"></i>
+                                <div><p class="text-sm font-bold">Multivitamin</p><p class="text-[10px] opacity-60">Morning • 8:00 AM</p></div>
+                            </div>
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="med2" class="hidden med-check">
+                        <label for="med2" class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-2xl cursor-pointer transition active:scale-95">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-capsules text-purple-500"></i>
+                                <div><p class="text-sm font-bold">Omega-3</p><p class="text-[10px] opacity-60">Afternoon • 1:00 PM</p></div>
+                            </div>
+                            <div class="w-5 h-5 border-2 border-slate-200 rounded-full"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-[32px] p-6 text-white overflow-hidden relative">
+                <h3 class="font-bold mb-4">Connected Wearables</h3>
+                <div class="flex items-center justify-between p-3 bg-white/10 rounded-2xl border border-white/10 mb-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center"><i class="fas fa-walking"></i></div>
-                        <div><p class="text-sm font-bold">10k Steps Challenge</p><p class="text-xs text-slate-400">8,420 / 10,000</p></div>
+                        <i class="fab fa-apple text-xl"></i>
+                        <div><p class="text-sm font-bold">Apple Watch S9</p><p class="text-[10px] text-green-400">Live Heart Rate: 68 BPM</p></div>
                     </div>
-                    <span class="text-blue-600 font-bold text-sm">+20 XP</span>
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                 </div>
             </div>
         </div>
 
         <div id="records" class="tab-content">
-            <h2 class="text-2xl font-bold mb-2">Health Wallet</h2>
-            <p class="text-slate-500 text-sm mb-6">Upload documents for AI-enabled record syncing.</p>
-            
-            <div class="bg-white p-8 rounded-[32px] border-2 border-dashed border-blue-200 text-center mb-6 hover:bg-blue-50 transition-colors cursor-pointer group">
-                <div class="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200 group-hover:rotate-6 transition">
-                    <i class="fas fa-camera text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-lg">Scan Prescription</h3>
-                <p class="text-sm text-slate-400">PDF, JPG, or PNG up to 10MB</p>
-                <button class="mt-6 bg-blue-600 text-white w-full py-3 rounded-xl font-bold">Browse Files</button>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="font-bold text-sm text-slate-400 uppercase tracking-widest">Recent Uploads</h3>
-                <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-file-pdf text-red-500 text-xl"></i>
-                        <div><p class="text-sm font-bold">Lab_Report_Feb10.pdf</p><p class="text-[10px] text-green-500 font-bold">Verified by AI</p></div>
-                    </div>
-                    <i class="fas fa-chevron-right text-slate-300"></i>
-                </div>
-                <div class="bg-white p-4 rounded-2xl flex items-center justify-between border border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-image text-blue-500 text-xl"></i>
-                        <div><p class="text-sm font-bold">Pharmacy_Bill_Jan.jpg</p><p class="text-[10px] text-slate-400 font-bold">Pending Review</p></div>
-                    </div>
-                    <i class="fas fa-chevron-right text-slate-300"></i>
-                </div>
+            <h2 class="text-2xl font-extrabold mb-6">Health Wallet</h2>
+            <div class="bg-white p-10 rounded-[32px] border-2 border-dashed border-slate-200 text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4"><i class="fas fa-file-upload text-2xl"></i></div>
+                <p class="font-bold">Drop Prescription Here</p>
+                <p class="text-xs text-slate-400 mt-1 italic">AI will automatically sync these to your Med Tracker.</p>
+                <button class="mt-6 bg-slate-900 text-white px-8 py-3 rounded-xl font-bold w-full">Upload</button>
             </div>
         </div>
 
         <div id="analytics" class="tab-content">
-            <h2 class="text-2xl font-bold mb-6">Predictive Insights</h2>
-            
-            <div class="bg-indigo-900 rounded-[32px] p-6 text-white mb-6 relative overflow-hidden">
-                <div class="relative z-10">
-                    <p class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-2">AI Forecast</p>
-                    <h3 class="text-xl font-bold mb-4 italic">"Low Risk of Chronic Fatigue"</h3>
-                    <div class="h-24 flex items-end gap-2 mb-4">
-                        <div class="w-full bg-indigo-500 h-[40%] rounded-t-sm"></div>
-                        <div class="w-full bg-indigo-400 h-[60%] rounded-t-sm"></div>
-                        <div class="w-full bg-indigo-300 h-[80%] rounded-t-sm"></div>
-                        <div class="w-full bg-white h-[95%] rounded-t-sm"></div>
-                        <div class="w-full bg-indigo-400 h-[70%] rounded-t-sm"></div>
-                    </div>
-                    <p class="text-xs text-indigo-100 opacity-80">Based on your activity levels and sleep patterns over the last 30 days.</p>
-                </div>
-                <i class="fas fa-chart-line absolute -bottom-4 -right-4 text-8xl text-indigo-800 opacity-30"></i>
+            <h2 class="text-2xl font-extrabold mb-6">Predictive Health</h2>
+            <div class="bg-blue-50 border border-blue-100 p-6 rounded-[32px] mb-6">
+                <p class="text-blue-900 font-bold mb-2 italic"><i class="fas fa-robot mr-2"></i>AI Insight</p>
+                <p class="text-sm text-blue-700 leading-relaxed">Based on your Apple Watch data, your recovery score is 92%. You're ready for high-intensity training today!</p>
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Resting HR</p>
-                    <p class="text-2xl font-bold">72 <span class="text-sm font-normal text-slate-400">bpm</span></p>
-                    <div class="text-[10px] text-green-500 mt-2 font-bold"><i class="fas fa-arrow-down"></i> Optimal</div>
-                </div>
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
-                    <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Sleep Score</p>
-                    <p class="text-2xl font-bold">8h <span class="text-sm font-normal text-slate-400">12m</span></p>
-                    <div class="text-[10px] text-blue-500 mt-2 font-bold"><i class="fas fa-check"></i> 92% Quality</div>
-                </div>
+            <div class="h-48 bg-white rounded-[32px] border border-slate-100 shadow-sm flex items-end justify-between p-6 gap-2">
+                <div class="w-full bg-slate-100 h-[60%] rounded-t-lg"></div>
+                <div class="w-full bg-slate-100 h-[80%] rounded-t-lg"></div>
+                <div class="w-full bg-blue-500 h-[95%] rounded-t-lg"></div>
+                <div class="w-full bg-slate-100 h-[70%] rounded-t-lg"></div>
+                <div class="w-full bg-slate-100 h-[50%] rounded-t-lg"></div>
             </div>
-
-            <div class="mt-8 bg-blue-50 p-6 rounded-[32px] border border-blue-100">
-                <h4 class="font-bold text-blue-900 mb-2 italic"><i class="fas fa-robot mr-2"></i>AI Nudge</h4>
-                <p class="text-sm text-blue-800 leading-relaxed">Your hydration is 15% lower than last Tuesday. Drinking 2 more glasses of water today will prevent energy dips!</p>
-            </div>
+            <p class="text-center text-[10px] font-bold text-slate-400 uppercase mt-4 tracking-widest">7-Day Health Score Trend</p>
         </div>
 
     </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50">
+        <button onclick="openTab(event, 'dashboard')" class="tab-link flex flex-col items-center gap-1 text-blue-600">
+            <i class="fas fa-home text-xl"></i><span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button onclick="openTab(event, 'vitality')" class="tab-link flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-heart-circle-check text-xl"></i><span class="text-[10px] font-bold">Vitality</span>
+        </button>
+        <button onclick="openTab(event, 'records')" class="tab-link flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-folder text-xl"></i><span class="text-[10px] font-bold">Records</span>
+        </button>
+        <button onclick="openTab(event, 'analytics')" class="tab-link flex flex-col items-center gap-1 text-slate-400">
+            <i class="fas fa-chart-line text-xl"></i><span class="text-[10px] font-bold">Analytics</span>
+        </button>
+    </nav>
 
     <script>
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].classList.remove("active"); }
             tablinks = document.getElementsByClassName("tab-link");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("bg-white", "shadow-sm", "text-blue-600");
-                tablinks[i].classList.add("text-slate-500");
+            for (i = 0; i < tablinks.length; i++) { 
+                tablinks[i].classList.remove("text-blue-600");
+                tablinks[i].classList.add("text-slate-400");
             }
             document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("bg-white", "shadow-sm", "text-blue-600");
-            evt.currentTarget.classList.remove("text-slate-500");
+            evt.currentTarget.classList.add("text-blue-600");
+            evt.currentTarget.classList.remove("text-slate-400");
         }
     </script>
 </body>
 </html>
-
